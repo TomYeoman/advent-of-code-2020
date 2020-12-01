@@ -41,14 +41,14 @@ func GetResult(matchCount int) int {
 	const MATCH = 2020
 	entries := ReadNumbersFromFile("day1_input.txt")
 
-	for x := range entries {
-		for y := range entries {
+	for x := 0; x < len(entries); x++ {
+		for y := x; y < len(entries); y++ {
 			if entries[x]+entries[y] == MATCH {
 				return entries[x] * entries[y]
 			}
 
 			if matchCount == 3 {
-				for z := range entries {
+				for z := y; z < len(entries); z++ {
 					if entries[x]+entries[y]+entries[z] == MATCH {
 						return entries[x] * entries[y] * entries[z]
 					}

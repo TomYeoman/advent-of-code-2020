@@ -35,5 +35,10 @@ func BenchmarkThreeMatches(b *testing.B) {
 	}
 }
 
+// V1
 // BenchmarkThreeMatches-4   	    1364	    903440 ns/op	    9120 B/op	     214 allocs/op
 // ~ 1ms
+
+// V2
+// BenchmarkThreeMatches-4   	    3306	    406025 ns/op	    9120 B/op	     214 allocs/op
+// ~0.5 ms
