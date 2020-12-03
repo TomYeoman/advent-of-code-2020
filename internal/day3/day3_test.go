@@ -15,7 +15,7 @@ func TestGetResult(t *testing.T) {
 	t.Run("Should fetch correct result part 1", func(t *testing.T) {
 		t.Run("The tree pattern repeats infinitely along the X axis", func(t *testing.T) {
 			got := RideSlope(entries)
-			assert.Equal(t, 439, got)
+			assert.Equal(t, 8336352024, got)
 		})
 	})
 
