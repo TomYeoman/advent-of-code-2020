@@ -12,9 +12,16 @@ import (
 func TestGetResult(t *testing.T) {
 	entries := ReadFromFile("day3_input.txt")
 
-	t.Run("Should fetch correct result part 1", func(t *testing.T) {
-		t.Run("The tree pattern repeats infinitely along the X axis", func(t *testing.T) {
-			got := RideSlope(entries)
+	// t.Run("V1", func(t *testing.T) {
+	// 	t.Run("Should fetch correct value", func(t *testing.T) {
+	// 		got := RideSlope(entries)
+	// 		assert.Equal(t, 8336352024, got)
+	// 	})
+	// })
+
+	t.Run("V2", func(t *testing.T) {
+		t.Run("Should fetch correct value", func(t *testing.T) {
+			got := RideSlopeV2(entries)
 			assert.Equal(t, 8336352024, got)
 		})
 	})
