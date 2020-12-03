@@ -18,6 +18,7 @@ type slope struct {
 func (s *slope) rideDown() []string {
 
 	var result []string
+
 	// Get current toboggan position
 	for s.toboggan.yPos < len(s.grid)-1 {
 
@@ -26,9 +27,6 @@ func (s *slope) rideDown() []string {
 
 		fmt.Printf("Toboggan at x: %v, y: %v \n", newXPosition, newYPosition)
 
-		if newYPosition == 322 {
-			fmt.Print("Test")
-		}
 		// CHeck whether our move, would exceed row length, if so dynamically re-size
 		if newXPosition > len(s.grid[newYPosition]) {
 			fmt.Printf("Resizing row %v \n", newYPosition)
@@ -49,6 +47,7 @@ func (s *slope) rideDown() []string {
 
 func (s *slope) resizeRowPath(row int) {
 
+	// Re-size by just enough, probably a little overkill here but works :)
 	increaseBy := row / 5
 	currRowData := s.grid[row]
 
