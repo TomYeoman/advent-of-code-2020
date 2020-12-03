@@ -1,44 +1,48 @@
 package day3
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type toboggan struct {
-	xPos int
-	yPos int
+type tobogganer struct {
+	x             int
+	y             int
+	right         int
+	down          int
+	treesCollided int
 }
 
 type slope struct {
-	grid [][]string
-	toboggan
+	grid         [][]string
+	tobogganists []tobogganer
 }
 
 // rideDown returns the path taken
-func (s *slope) rideDown() []string {
+func (s *slope) rideDown() []int {
 
-	var result []string
+	var result []int
 
-	// Get current toboggan position
-	for s.toboggan.yPos < len(s.grid)-1 {
+	// Run every tobogannism down the tracks
+	for i, _ := range s.tobogganists {
+		// Whilst there's still a path to travel down
+		for s.tobogganists[i].y < len(s.grid)-1 {
+			newX := s.tobogganists[i].x + s.tobogganists[i].right
+			newY := s.tobogganists[i].y + s.tobogganists[i].down
 
-		newXPosition := s.toboggan.xPos + 3
-		newYPosition := s.toboggan.yPos + 1
+			// CHeck whether our move, would exceed row length, if so dynamically re-size
+			if newX >= len(s.grid[newY]) {
+				s.resizeRowPath(newY)
+			}
 
-		fmt.Printf("Toboggan at x: %v, y: %v \n", newXPosition, newYPosition)
+			s.tobogganists[i].x = newX
+			s.tobogganists[i].y = newY
 
-		// CHeck whether our move, would exceed row length, if so dynamically re-size
-		if newXPosition > len(s.grid[newYPosition]) {
-			fmt.Printf("Resizing row %v \n", newYPosition)
-			s.resizeRowPath(newYPosition)
+			// Get value from grid
+			if s.grid[newY][newX] == "#" {
+				s.tobogganists[i].treesCollided++
+			}
 		}
 
-		s.toboggan.xPos = newXPosition
-		s.toboggan.yPos = newYPosition
-
-		// Get value from grid
-		result = append(result, s.grid[newYPosition][newXPosition])
-
+		fmt.Print("Completed Check")
+		result = append(result, s.tobogganists[i].treesCollided)
 	}
 
 	return result
@@ -47,19 +51,17 @@ func (s *slope) rideDown() []string {
 
 func (s *slope) resizeRowPath(row int) {
 
+	resizeCount := row / 5
+	dataToDupe := s.grid[row]
+
 	// Re-size by just enough, probably a little overkill here but works :)
-	increaseBy := row / 5
-	currRowData := s.grid[row]
-
-	for x := 0; x < increaseBy; x++ {
-		s.grid[row] = append(s.grid[row], currRowData...)
+	for x := 0; x < resizeCount; x++ {
+		s.grid[row] = append(s.grid[row], dataToDupe...)
 	}
-
 }
 
 // Generate terrain
 func (s *slope) generateTerrain(entries []string) {
-
 	dataGrid := make([][]string, len(entries))
 	for x, row := range entries {
 		dataGrid[x] = make([]string, len(row))
@@ -71,24 +73,31 @@ func (s *slope) generateTerrain(entries []string) {
 	s.grid = dataGrid
 }
 
-func RideSlope(entries []string) int {
-
+func RideSlope(entries []string) []int {
 	slope := &slope{
-		toboggan: toboggan{
-
-			0, 0,
+		tobogganists: []tobogganer{
+			{
+				x: 0, y: 0, right: 1, down: 1, treesCollided: 0,
+			},
+			{
+				x: 0, y: 0, right: 3, down: 1, treesCollided: 0,
+			},
+			{
+				x: 0, y: 0, right: 5, down: 1, treesCollided: 0,
+			},
+			{
+				x: 0, y: 0, right: 7, down: 1, treesCollided: 0,
+			},
+			{
+				x: 0, y: 0, right: 1, down: 2, treesCollided: 0,
+			},
 		},
 		grid: [][]string{},
 	}
 
 	slope.generateTerrain(entries)
-	result := slope.rideDown()
 
-	treesHit := 0
-	for _, res := range result {
-		if res == "#" {
-			treesHit++
-		}
-	}
-	return treesHit
+	results := slope.rideDown()
+
+	return results
 }
