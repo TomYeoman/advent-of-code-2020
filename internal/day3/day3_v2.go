@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type Rider interface {
+	rideSlope(slope Slope, done chan bool)
+}
+
 // ------------ PRIMTIIVE API ------------- //
 
 type Tobogganer struct {
@@ -17,7 +21,17 @@ type Tobogganer struct {
 }
 
 func (t *Tobogganer) rideSlope(slope Slope, done chan bool) {
-	fmt.Println("Riding Slope 🎿")
+	fmt.Println("Tobogganer riding slope 🎿")
+	time.Sleep(time.Second)
+	done <- true
+}
+
+type Skier struct {
+	y int
+}
+
+func (t *Skier) rideSlope(slope Slope, done chan bool) {
+	fmt.Println("Skiier riding slope ⛷️")
 	time.Sleep(time.Second)
 	done <- true
 }
@@ -40,14 +54,14 @@ func (s *Slope) generateTerrain(source []string) {
 
 // ------------ LOW LEVEL API ------------- //
 
-func rideSlope(slope Slope, t []Tobogganer) {
+func rideSlope(slope Slope, riders []Rider) {
 	done := make(chan bool)
 
 	for {
-		rider := rand.Intn(len(t))
+		rider := rand.Intn(len(riders))
 		fmt.Printf("Sending rider %d down the slope \n", rider)
 
-		go t[rider].rideSlope(slope, done)
+		go riders[rider].rideSlope(slope, done)
 		<-done
 	}
 }
@@ -61,13 +75,13 @@ type SkiPark struct {
 }
 
 // This method will now be responsible, for
-func OpenPark(skipark SkiPark, slopeSeed []string) error {
-	skipark.slope.generateTerrain(slopeSeed)
-	rideSlope(skipark.slope, skipark.tobogannists)
+func OpenPark(slope Slope, riders []Rider, slopeSeed []string) error {
+	slope.generateTerrain(slopeSeed)
+	rideSlope(slope, riders)
 	return nil
 }
 
-func RideSlopeV2(entries []string) error {
+func RideSlopeV2(slopeSeed []string) error {
 	park := SkiPark{
 		slope: Slope{
 			terrain: [][]string{},
@@ -79,10 +93,13 @@ func RideSlopeV2(entries []string) error {
 			{
 				x: 0, y: 0, positionsDown: 5, positionsRight: 10, treesCollided: 0,
 			},
+			{
+				x: 0, y: 0, positionsDown: 5, positionsRight: 10, treesCollided: 0,
+			},
 		},
 	}
 
-	if err := OpenPark(park, entries); err != nil {
+	if err := OpenPark(park.slope, park.tobogannists, slopeSeed); err != nil {
 		fmt.Println(err)
 		return err
 	}
@@ -122,4 +139,30 @@ func RideSlopeV2(entries []string) error {
 		"wish to start a game every X5minutes, that has a slope and riders". Lets define a high level API to help with this -
 			- OpenPark - It's a function based API, that is going to be responsible for building terrains, and sending riders down them,
 
+
+		-----------------------------------
+		We've now had some new requirements arrive -
+
+		Requirements (V2)
+		-  skiiers would now like to ride the slope aswell.
+			- They can jump over trees but are small enough to fall down holes
+			- They can only move down
+
+		Lets try and improve our app, so such a scenario wouldn't require changes
+
+		We're going to decouple by discovery. Start with the HIGH level API and work our way down, In our case
+		It may be better to start with our smaller interfaces due to higher defining multiple behaviours.
+
+		once our small interfaces discovered, and it may reveal our large one.
+
+		Our low level `rideSlope` function currently works based on what data IS rather than what it does.
+		If we're going to allow for a skiier, we could change this method to be polymorphic. Which simply means
+		"I care about what the data DOES, rather than what it IS"
+
+		Lets start by defining a new interface
+			- "Rider" - we can use the signature that the toboggan rider already defined. We already have a
+			concrete definition, however now we're starting to discover and decouple.
+
+		This is a good start, and has changed our lower level API to my polymorphic. We can now say our
+		tobogannist implements the Rider interface
 */
