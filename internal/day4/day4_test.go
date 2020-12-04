@@ -14,21 +14,21 @@ func TestGetResult(t *testing.T) {
 		invalidPassports := ReadFromFile("fixtures/invalid_passports.txt")
 
 		got := GetPasswordCount(invalidPassports)
-		assert.Equal(t, 5, got)
+		assert.Equal(t, 0, got)
 	})
 
 	t.Run("Should process all valid passports correctly", func(t *testing.T) {
 		validPassports := ReadFromFile("fixtures/valid_passports.txt")
 
 		got := GetPasswordCount(validPassports)
-		assert.Equal(t, 5, got)
+		assert.Equal(t, 4, got)
 	})
 
 	t.Run("Should process full input correctly invalid password", func(t *testing.T) {
-		fullPassportSet := ReadFromFile("fixtures/fixtures/day4_input.txt")
+		fullPassportSet := ReadFromFile("fixtures/day4_input.txt")
 
 		got := GetPasswordCount(fullPassportSet)
-		assert.Equal(t, 5, got)
+		assert.Equal(t, 145, got)
 	})
 
 }
