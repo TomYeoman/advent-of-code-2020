@@ -14,8 +14,7 @@ func GetPasswordCount(entries []string) int {
 		repeatPatternMatch := regexp.MustCompile(`(\w+):([^\s ]+)*`).FindAllString(entry, -1)
 
 		for _, data := range repeatPatternMatch {
-			keyValue := strings.Split(data, ":")
-			if keyValue[0] != "cid" {
+			if strings.Split(data, ":")[0] != "cid" {
 				fieldsIdentified++
 			}
 		}
