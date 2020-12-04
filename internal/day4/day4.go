@@ -31,8 +31,6 @@ func GetPasswordCount(entries []string) int {
 
 				if len(repeatPatternMatch) > 0 {
 					fieldsIdentified++
-				} else {
-					print("test")
 				}
 			}
 		}
