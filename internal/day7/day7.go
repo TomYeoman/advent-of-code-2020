@@ -42,7 +42,7 @@ func CheckHitCount(searchterm string, data []string, part int) int {
 
 		// Sanitize line a little, to make it easier to regex
 		// Before = "light red bags contain 1 bright white bag, 2 muted yellow bags.""
-		// After = "lightredbags,1brightwhitebag,2mutedyellowbags,"
+		// After = "lightred,1brightwhite,2mutedyellow"
 		line = strings.NewReplacer("contain", ",", ".", ",", " ", "", "bags", "", "bag", "").Replace(line)
 
 		// Split on commas
